@@ -24,11 +24,11 @@ black_locations = [(0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7
                    (0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6)]
 captured_pieces_white = []
 captured_pieces_black = []
-# 0 - whites turn no selection: 1-whites turn piece selected: 2- black turn no selection, 3 - black turn piece selected
+# 0 - цагаан ээлж, сонголтгүй: 1 - цагаан ээлж, сонгосон ширлүүр: 2 - хар ээлж, сонголтгүй: 3 - хар ээлж, сонгосон ширлүүр
 turn_step = 0
 selection = 100
 valid_moves = []
-# load in game piece images (queen, king, rook, bishop, knight, pawn) x 2
+# Тоглоомын хэсгийн зурагнуудыг (queen, king, rook, bishop, knight, pawn) x 2
 black_queen = pygame.image.load('assets/images/black queen.png')
 black_queen = pygame.transform.scale(black_queen, (80, 80))
 black_queen_small = pygame.transform.scale(black_queen, (45, 45))
@@ -173,7 +173,7 @@ def check_king(position, color):
     else:
         friends_list = black_locations
         enemies_list = white_locations
-    # 8 squares to check for kings, they can go one square any direction
+    # Хаадыг шалгах 8 хавтгай, тэдгээр нь ямар ч чиглэлийн нэг хавтгайруу шилжиж чадна
     targets = [(1, 0), (1, 1), (1, -1), (-1, 0), (-1, 1), (-1, -1), (0, 1), (0, -1)]
     for i in range(8):
         target = (position[0] + targets[i][0], position[1] + targets[i][1])
@@ -266,7 +266,7 @@ def check_pawn(position, color):
         if (position[0], position[1] + 1) not in white_locations and \
                 (position[0], position[1] + 1) not in black_locations and position[1] < 7:
             moves_list.append((position[0], position[1] + 1))
-            # indent the check for two spaces ahead, so it is only checked if one space ahead is also open
+            # шийдлийг хоёр зай урагш нь хулганаар дар, ингэснээр нэг зай урагш нь чөлөөтэй бол байж байж л шалгагдана
             if (position[0], position[1] + 2) not in white_locations and \
                     (position[0], position[1] + 2) not in black_locations and position[1] == 1:
                 moves_list.append((position[0], position[1] + 2))
@@ -283,7 +283,7 @@ def check_pawn(position, color):
         if (position[0], position[1] - 1) not in white_locations and \
                 (position[0], position[1] - 1) not in black_locations and position[1] > 0:
             moves_list.append((position[0], position[1] - 1))
-            # indent the check for two spaces ahead, so it is only checked if one space ahead is also open
+            # шийдлийг хоёр зай урагш нь хулганаар дар, ингэснээр нэг зай урагш нь чөлөөтэй бол байж байж л шалгагдана
             if (position[0], position[1] - 2) not in white_locations and \
                     (position[0], position[1] - 2) not in black_locations and position[1] == 6:
                 moves_list.append((position[0], position[1] - 2))
@@ -307,7 +307,7 @@ def check_knight(position, color):
     else:
         friends_list = black_locations
         enemies_list = white_locations
-    # 8 squares to check for knights, they can go two squares in one direction and one in another
+    # Морины хөдөлгөөнийг шалгах 8 хавтгай, тэд нэг чиглэлд хоёр хавтгай, өөр чиглэлд нэг хавтгай явах боломжтой
     targets = [(1, 2), (1, -2), (2, 1), (2, -1), (-1, 2), (-1, -2), (-2, 1), (-2, -1)]
     for i in range(8):
         target = (position[0] + targets[i][0], position[1] + targets[i][1])
@@ -344,8 +344,6 @@ def draw_captured():
         index = piece_list.index(captured_piece)
         screen.blit(small_white_images[index], (925, 5 + 50 * i))
 
-
-# flashing square around king if in check
 def draw_check():
     global check
     check = False
@@ -379,7 +377,6 @@ def is_check(king_location, opponent_options):
 
 
 def check_valid_moves_for_piece(piece, location, player_pieces, player_locations, opponent_pieces, opponent_locations):
-    # Example implementation for a queen
     valid_moves = []
     
     def add_move(x, y):
@@ -395,7 +392,6 @@ def check_valid_moves_for_piece(piece, location, player_pieces, player_locations
     x, y = location
     
     if piece == 'queen':
-        # Vertical and horizontal
         for i in range(1, 8):
             if not add_move(x + i, y): break
         for i in range(1, 8):
@@ -415,14 +411,14 @@ def check_valid_moves_for_piece(piece, location, player_pieces, player_locations
             if not add_move(x - i, y + i): break
         
     elif piece == 'king':
-        # King can move one step in any direction
+        # King ямар ч чиглэлд нэг алхам хөдөлж чадна
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1),
                       (1, 1), (-1, -1), (1, -1), (-1, 1)]
         for dx, dy in directions:
             add_move(x + dx, y + dy)
             
     elif piece == 'rook':
-        # Rook moves vertically and horizontally
+        # Rook дээн ба хэвтээ чиглэлд хөдөлдөг
         for i in range(1, 8):
             if not add_move(x + i, y): break
         for i in range(1, 8):
@@ -433,7 +429,7 @@ def check_valid_moves_for_piece(piece, location, player_pieces, player_locations
             if not add_move(x, y - i): break
             
     elif piece == 'bishop':
-        # Bishop moves diagonally
+        # Bishop налуун чиглэлд хөдөлдөг
         for i in range(1, 8):
             if not add_move(x + i, y + i): break
         for i in range(1, 8):
@@ -444,14 +440,14 @@ def check_valid_moves_for_piece(piece, location, player_pieces, player_locations
             if not add_move(x - i, y + i): break
             
     elif piece == 'knight':
-        # Knight moves in an L-shape (2 squares in one direction and 1 square perpendicular)
+        # Knight L хэлбэрээр хөдөлдөг (нэг чиглэлд 2 нүд, босоо чиглэлд 1 нүд)
         knight_moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
                         (1, -2), (1, 2), (2, -1), (2, 1)]
         for dx, dy in knight_moves:
             add_move(x + dx, y + dy)
             
     elif piece == 'pawn':
-        # Pawn moves differently depending on player and position
+        # Pawn тоглогч болон байрлалаас хамааран өөрөөр хөдөлдөг
         if (x, y) in player_pieces['white']:
             # White pawn moves upward (decreasing y)
             if (x, y - 1) not in player_locations.union(opponent_locations):
@@ -480,7 +476,7 @@ def check_valid_moves_for_piece(piece, location, player_pieces, player_locations
 
 def is_checkmate(turn_step, white_pieces, white_locations, black_pieces, black_locations, white_options, black_options):
     if turn_step % 2 == 0:
-        # White's turn
+        # White
         for i in range(len(white_pieces)):
             piece = white_pieces[i]
             original_location = white_locations[i]
@@ -489,10 +485,10 @@ def is_checkmate(turn_step, white_pieces, white_locations, black_pieces, black_l
                 simulated_white_locations = white_locations[:]
                 simulated_white_locations[i] = move
                 if not is_check(simulated_white_locations[white_pieces.index('king')], black_options):
-                    return None  # Not checkmate, game continues
-        return 'Black Wins'  # White is checkmated, black wins
+                    return None  
+        return 'Black Wins' 
     else:
-        # Black's turn
+        # Black
         for i in range(len(black_pieces)):
             piece = black_pieces[i]
             original_location = black_locations[i]
@@ -501,8 +497,8 @@ def is_checkmate(turn_step, white_pieces, white_locations, black_pieces, black_l
                 simulated_black_locations = black_locations[:]
                 simulated_black_locations[i] = move
                 if not is_check(simulated_black_locations[black_pieces.index('king')], white_options):
-                    return None  # Not checkmate, game continues
-        return 'White Wins'  # Black is checkmated, white wins
+                    return None  
+        return 'White Wins'  
     
 
 
@@ -550,7 +546,7 @@ def check_ep(old_coords, new_coords):
         ep_coords = (new_coords[0], new_coords[1] + 1)
         piece = black_pieces[index]
     if piece == 'pawn' and abs(old_coords[1] - new_coords[1]) > 1:
-        # if piece was pawn and moved two spaces, return EP coords as defined above
+       # хэрэв хэсэг нь туулай байж хоёр зай хөдөлсөн бол дээр тодорхойлсон EP координатыг буцаана
         pass
     else:
         ep_coords = (100, 100)
@@ -559,8 +555,7 @@ def check_ep(old_coords, new_coords):
 
 
 def check_castling():
-    # king must not currently be in check, neither the rook nor king has moved previously, nothing between
-    # and the king does not pass through or finish on an attacked piece
+    # king одоогоор шахалтанд ороогүй байх ёстой, хээнцэр болон хаан урьд нь хөдөлсөнгүй, дунд нь юу ч байхгүй
     castle_moves = []  
     rook_indexes = []
     rook_locations = []
@@ -743,7 +738,6 @@ while run:
                     winner = 'black'
                 if click_coords in white_locations:
                     selection = white_locations.index(click_coords)
-                    # check what piece is selected, so you can only draw castling moves if king is selected
                     selected_piece = white_pieces[selection]
                     if turn_step == 0:
                         turn_step = 1
@@ -759,7 +753,6 @@ while run:
                         black_pieces.pop(black_piece)
                         black_locations.pop(black_piece)
                         black_moved.pop(black_piece)
-                    # adding check if en passant pawn was captured
                     if click_coords == black_ep:
                         black_piece = black_locations.index((black_ep[0], black_ep[1] - 1))
                         captured_pieces_white.append(black_pieces[black_piece])
@@ -771,7 +764,6 @@ while run:
                     turn_step = 2
                     selection = 100
                     valid_moves = []
-                # add option to castle
                 elif selection != 100 and selected_piece == 'king':
                     for q in range(len(castling_moves)):
                         if click_coords == castling_moves[q][0]:
@@ -793,7 +785,6 @@ while run:
                     winner = 'white'
                 if click_coords in black_locations:
                     selection = black_locations.index(click_coords)
-                    # check what piece is selected, so you can only draw castling moves if king is selected
                     selected_piece = black_pieces[selection]
                     if turn_step == 2:
                         turn_step = 3
@@ -863,7 +854,7 @@ while run:
 
 
     
-# Inside your main game loop or where the game ends due to checkmate
+# Таны гол тоглоомын давталтын дотор эсвэл шах хулганаар тоглоом дуусах газар
     if winner:
         game_over = True
         draw_game_over(winner)
